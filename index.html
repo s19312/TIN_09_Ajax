@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>TIN_09</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        document.getElementById("submit").addEventListener("click", function(e) {
+            e.preventDefault();
+            let registerForm = document.forms["calcForm"];
+            let val1 = registerForm.elements["val1"].value;
+            let op = registerForm.elements["operator"].value;
+            let val2 = registerForm.elements["val2"].value;
+            let calc = JSON.stringify({
+                val1: val1,
+                op: op,
+                num2: val2
+            });
+            let request = new XMLHttpRequest();
+            request.open("POST", "/9b", true);
+            request.setRequestHeader("Content-Type", "application/json");
+            request.addEventListener("load", function() {
+                let receivedData = JSON.parse(request.response);
+                let val1 = parseInt(receivedData.val1);
+                let val2 = parseInt(receivedData.val2);
+                let op = receivedData.op;
+                let res;
+                if (op === '+') {
+                    res = val1 + val2;
+                }
+                else if (op === '-') {
+                    res = val1 - val2
+                } else if (op === '/') {
+                    res = val1 / val2
+                } else if (op === '*') {
+                    res = val1 * val2
+                } else {
+                    registerForm.reset();
+                }
+                document.getElementById("result").innerHTML = "result: " + res;
+            });
+            request.send(calc);
+        });
+    </script>
+</head>
+
+<body>
+<h2>Calculator </h2>
+<form id="form">
+    <div>
+        <input type="number" id="val1" name="val1" placeholder="Enter first number">
+        <input type="number" id="val2" name="val2" placeholder="Enter second number">
+        <select id="operator">
+            <option value="*">Multiply</option>
+            <option value="/">Divide</option>
+            <option value="+">Add</option>
+            <option value="-">Substract</option>
+        </select>
+        <button type="submit" id="submit" style="width: 100px; background: green">Submit</button>
+    </div>
+</form>
+<p></p>
+</body>
+
+</html>
